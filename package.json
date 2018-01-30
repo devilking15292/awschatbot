@@ -1,0 +1,16 @@
+{
+  "name": "aws-chatbot",
+  "version": "1.0.0",
+  "description": "aws console management via chatbot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "startauth": "node oauth2-codeVerifier.js"
+  },
+  "author": "devilking15292",
+  "license": "ISC",
+  "dependencies": {
+    "google-auth-library": "^1.1.0",
+    "opn": "^5.2.0"
+  }
+}
