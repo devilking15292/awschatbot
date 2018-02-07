@@ -23,9 +23,8 @@ window.addEventListener('load', function() {
   var loginBtn = document.getElementById('qsLoginBtn');
   var logoutBtn = document.getElementById('qsLogoutBtn');
 
-  homeViewBtn.addEventListener('click', function() {
-    homeView.style.display = 'inline-block';
-    loginView.style.display = 'none';
+  homeViewBtn.addEventListener('click', function() {    
+    getDelegationToken(localStorage.getItem('id_token'));
   });
 
   loginBtn.addEventListener('click', function(e) {
@@ -65,6 +64,7 @@ window.addEventListener('load', function() {
       if (authResult && authResult.accessToken && authResult.idToken) {
         window.location.hash = '';
         setSession(authResult);
+        getDelegationToken(authResult.idToken);
         loginBtn.style.display = 'none';
         homeView.style.display = 'inline-block';
       } else if (err) {
@@ -76,6 +76,20 @@ window.addEventListener('load', function() {
       }
       displayButtons();
     });
+  }
+
+  function getDelegationToken(id_token){ 
+    var data = {'idToken':id_token};    
+    $.ajax({
+      type: "POST",
+      headers: {'Content-Type':'application/json'},
+      url: "http://localhost:8080/getToken",
+      data: JSON.stringify(data),
+      success: function (msg) {
+          console.log(msg);
+      }
+    });
+       
   }
 
   function displayButtons() {
