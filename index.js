@@ -15,27 +15,21 @@ app.get('/', function(req, res){
 	res.sendFile(__dirname + '/index.html');
 });
 
-app.post('/getToken',(req,res) => {
-	console.log("request",req.body);
-	awsApi.sts(req.body.idToken);
-	res.send(req.body);
+app.post('/getToken',(req,res) => {	
+	var resp = awsApi.sts(req.body.idToken);	
+	res.send(resp)	;
 });
 
-// app.get('/getToken',function(req,res){
-// 	console.log("request",req);
-// 	res.send("success");
-// });
+io.on('connection', function(socket){
+	console.log('user connected');
+	socket.on('chat message', function(msg){
+		io.emit('chat message', msg);
+	});
 
-// io.on('connection', function(socket){
-// 	console.log('user connected');
-// 	socket.on('chat message', function(msg){
-// 		io.emit('chat message', msg);
-// 	});
-
-// 	socket.on('disconnect', function(){
-//         io.emit('chat message', 'user disconnected');
-// 	});
-// });
+	socket.on('disconnect', function(){
+        io.emit('chat message', 'user disconnected');
+	});
+});
 
 http.listen(8080, function(){
   console.log('listening on *:8080');

@@ -2,26 +2,24 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 
 
-module.exports.sts = function(id_token){
-
-	// AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-	//  IdentityPoolId: 'IDENTITY_POOL_ID',
-	//  Logins: {
-	//     'login.provider.com': token
-	//  }
-	// });
-	var sts = new AWS.STS();
-	var params = {		
-		RoleArn: 'arn:aws:iam::478401327492:role/Test', /* required */
-		WebIdentityToken: id_token, /* required */
-		RoleSessionName: 'role1',		
-		DurationSeconds: 3600
-	};
-	sts.assumeRoleWithWebIdentity(params, function (err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log("sts",data);           // successful response
-	});
+module.exports.sts = function(id_token){	
+	AWS.config.credentials = new AWS.WebIdentityCredentials({
+	  RoleArn: 'arn:aws:iam::478401327492:role/awsbot',
+	  WebIdentityToken: id_token, 
+	  RoleSessionName: 'web',
+	  DurationSeconds: 3600
+	}, {	  
+	  httpOptions: {
+	    timeout: 100
+	  }
+	});	
+	return "success";
 };
+
+module.exports.refreshSTS = function(){
+	// boolean isRefresh = AWS.config.credentials.needsRefresh();
+	// console.log("refresh", isRefresh);
+}
 
 module.exports.cloudWatch = function (){    
     var cw = new AWS.CloudWatch({apiVersion: '2010-08-01'});

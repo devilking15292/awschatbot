@@ -63,10 +63,10 @@ window.addEventListener('load', function() {
     webAuth.parseHash(function(err, authResult) {
       if (authResult && authResult.accessToken && authResult.idToken) {
         window.location.hash = '';
-        setSession(authResult);
-        getDelegationToken(authResult.idToken);
+        setSession(authResult);        
         loginBtn.style.display = 'none';
         homeView.style.display = 'inline-block';
+        redirectToBot();
       } else if (err) {
         homeView.style.display = 'inline-block';
         console.log(err);
@@ -75,6 +75,17 @@ window.addEventListener('load', function() {
         );
       }
       displayButtons();
+    });
+  }
+
+  function redirectToBot(){
+    $.ajax({
+      type: "GET",
+      headers: {'Content-Type':'application/json'},
+      url: "http://localhost:8080/",      
+      success: function (msg) {
+          console.log(msg);
+      }
     });
   }
 
