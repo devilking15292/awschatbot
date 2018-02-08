@@ -1,0 +1,15 @@
+<section layout="column" flex layout-fill layout-align="center center" class="login">
+	<md-card class="loginRegisterCards" md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+		<md-card-content layout="row" layout-fill style="width: 80vw;">
+			<div flex layout="column" layout-align="end auto" layout-padding>
+				<md-input-container>
+					<label>Name</label>
+					<input id="name">
+				</md-input-container>
+				<md-button ng-click="login()">
+					Login
+				</md-button>
+			</div>
+		</md-card-content>
+	</md-card>
+</section>

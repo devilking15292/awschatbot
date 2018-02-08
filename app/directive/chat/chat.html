@@ -1,0 +1,16 @@
+<div layout="row" ng-if="chat.sender && chat.sender !== user" layout-align="start start" >
+	<div layout="column" layout-align="start start" class="chatMessage" flex="50">
+		<span class="chatSender" ng-bind="chat.sender"></span>
+		<hr>
+		<span class="chatMsg" ng-bind="chat.msg"></span>
+	</div>
+</div>
+
+<div layout="row" ng-if="chat.sender && chat.sender === user" layout-align="end end">
+	<div layout="column" class="chatMessage sen" flex="50">
+		<span class="chatMsg" ng-bind="chat.msg"></span>
+	</div>
+</div>
+
+<div layout="column" ng-if="!chat.sender" ng-bind="chat.msg" layout-align="center center" class="textCenter">
+</div>

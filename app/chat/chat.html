@@ -1,0 +1,41 @@
+<section layout="row" layout-fill layout-align="start end" class="login">
+	<md-sidenav
+		ng-if="loggedIn && !isMobile"
+		class="md-sidenav-left"
+		md-component-id="left"
+		layout-fill
+		md-is-locked-open="true"
+		md-whiteframe="4">
+
+		<md-toolbar class="md-theme-indigo">
+		<h1 class="md-toolbar-tools">Active users {{userList.userCount}}</h1>
+		</md-toolbar>
+		<md-content layout-padding>
+		<div ng-repeat="user in userList.users" >
+			<md-button class="md-primary" >
+				{{user}}
+			</md-button>
+		</div>
+		</md-content>
+	</md-sidenav>
+	<section layout="column" flex="80" layout-align="end center" class="login">
+		<div id="messages" style="min-height:80%;max-height:80%;">
+			<chat ng-repeat="chat in chatStore" chatData="chat"></chat-message>
+		</div>
+		<div>
+			<md-input-container>
+				<label>Type something..</label>
+				<input id="chat"/>
+			</md-input-container>
+			<md-button class="md-primary" ng-click="send()">
+				send
+			</md-button>
+		</div>
+	</section>
+	<md-button 
+		flex="20"
+		ng-if="loggedIn && !isMobile"
+		ng-click="logout()">
+		logout
+	</md-button
+</section>
