@@ -1,12 +1,23 @@
 var express = require('express')
+var awsApi = require('./aws-api.js')
 var app = express();
+var cors = require("cors");
+var bodyParser = require("body-parser");
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var usersData = {userCount:0, users:[]};
 
+app.use(cors())
+app.use(bodyParser.json())
+
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/index.html');
+});
+
+app.post('/getToken',(req,res) => {	
+	var resp = awsApi.sts(req.body.idToken);	
+	res.send(resp)	;
 });
 
 io.on('connection', function(socket){
