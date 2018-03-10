@@ -6,11 +6,11 @@
 	function router($stateProvider, $urlRouterProvider) {
 		$stateProvider
 			/*.state('login', {
-				url: '/login',
-				controller  : "loginController",
-				templateUrl : "./app/login/login.html"
-			})
-			.state('chat', {
+				url: '/',
+				//controller  : "loginController",
+				templateUrl : "./login/index.html"
+			})*/
+			/*.state('chat', {
 				url: '/chat',
 				controller  : "chatController",
 				templateUrl : "./app/chat/chat.html"
@@ -20,6 +20,11 @@
 				controller  : "loginController",
 				templateUrl : "./app/login/loginMobile.html"
 			})*/
+			.state('login', {
+				url: '/',
+				//controller  : "loginController",
+				//templateUrl : "./login/index.html"
+			})
 			.state('chatMobile', {
 				url: '/chatMobile',
 				controller  : "chatController",

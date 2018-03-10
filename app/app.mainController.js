@@ -21,6 +21,7 @@
 		
 		function logout() {
 			socketService.emit('logout');
+			$state.go('login');
 		}
 		
 		socketService.on('chat message', function(resp){

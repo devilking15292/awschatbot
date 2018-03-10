@@ -27,6 +27,10 @@
 		<script src="/app/directive/chat/chat.directive.js"></script>
 
 		<script src="/app/app.router.js"></script>
+		<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>  
+		  <script src="./login/node_modules/auth0-js/build/auth0.js"></script>
+		  <script src="./login/auth0-variables.js"></script>  
+		  <script src="./login/app.js"></script>
 	</head>
 	<body ng-controller="mainController" layout="row" layout-fill ng-if="!screenIsSmall">
 		<div ui-view flex layout-fill></div>

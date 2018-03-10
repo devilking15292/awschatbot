@@ -20,6 +20,7 @@ app.use("/app", express.static(__dirname + '/app'));
 app.use("/style", express.static(__dirname + '/style'));
 app.use("/images", express.static(__dirname + '/images'));
 app.use("/fonts", express.static(__dirname + '/fonts'));
+app.use("/login", express.static(__dirname + '/login'));
 
 app.post('/getToken',(req,res) => {	
 	var resp = awsApi.sts(req.body.idToken);	
@@ -29,6 +30,7 @@ app.post('/getToken',(req,res) => {
 io.on('connection', function(socket){
 	console.log('user connected');
 	var usersData = {};
+	socket.emit('chat message', {sender: this.user, msg: "eppa ARN anupuviyam"});
 	socket.on('login', function(userData) {
 		//userData = userData.toLowerCase().replace(/\s/g, "");
 		if(!isADuplicate(userData)) {
@@ -38,6 +40,7 @@ io.on('connection', function(socket){
 			//usersData.users.push(userData);
 			socket.emit('loggedIn', {msg: userData, users: usersData});
 			io.emit('botMessage', {msg: this.user+" has entered the chat", users: usersData});
+			io.emit('chat message', {sender: this.user, msg: "eppa ARN anupuviyam"});
 			//setTimer(this);
 		} else {
 			this.emit('chooseDiffName');

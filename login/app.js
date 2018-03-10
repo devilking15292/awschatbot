@@ -1,8 +1,8 @@
-window.addEventListener('load', function() {
-  var content = document.querySelector('.content');
-  var loadingSpinner = document.getElementById('loading');
-  content.style.display = 'block';
-  loadingSpinner.style.display = 'none';
+//window.addEventListener('load', function() {
+  //var content = document.querySelector('.content');
+  //var loadingSpinner = document.getElementById('loading');
+  //content.style.display = 'block';
+  //loadingSpinner.style.display = 'none';
 
   var webAuth = new auth0.WebAuth({
     domain: AUTH0_DOMAIN,
@@ -14,7 +14,7 @@ window.addEventListener('load', function() {
     leeway: 60
   });
 
-  var loginStatus = document.querySelector('.container h4');
+ /* var loginStatus = document.querySelector('.container h4');
   var loginView = document.getElementById('login-view');
   var homeView = document.getElementById('home-view');
 
@@ -32,7 +32,7 @@ window.addEventListener('load', function() {
     webAuth.authorize();
   });
 
-  logoutBtn.addEventListener('click', logout);
+  logoutBtn.addEventListener('click', logout);*/
 
   function setSession(authResult) {
     // Set the time that the access token will expire at
@@ -49,7 +49,8 @@ window.addEventListener('load', function() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
-    displayButtons();
+    //displayButtons();
+	authenticate();
   }
 
   function isAuthenticated() {
@@ -64,8 +65,8 @@ window.addEventListener('load', function() {
       if (authResult && authResult.accessToken && authResult.idToken) {
         window.location.hash = '';
         setSession(authResult);        
-        loginBtn.style.display = 'none';
-        homeView.style.display = 'inline-block';
+        //loginBtn.style.display = 'none';
+        //homeView.style.display = 'inline-block';
         redirectToBot();
       } else if (err) {
         homeView.style.display = 'inline-block';
@@ -73,20 +74,30 @@ window.addEventListener('load', function() {
         alert(
           'Error: ' + err.error + '. Check the console for further details.'
         );
-      }
-      displayButtons();
+      } else {
+		  webAuth.authorize();
+	  }
     });
+  }
+  
+  function authenticate() {
+	  if(isAuthenticated()) {
+		  redirectToBot();
+	  } else {
+		  handleAuthentication();
+	  } 
   }
 
   function redirectToBot(){
-    $.ajax({
+    /*$.ajax({
       type: "GET",
       headers: {'Content-Type':'application/json'},
-      url: "http://localhost:8080/",      
+      url: "http://localhost:8080/#!/chatMobile",      
       success: function (msg) {
           console.log(msg);
       }
-    });
+    });*/
+	location.href = "http://localhost:8080/#!/chatMobile";
   }
 
   function getDelegationToken(id_token){ 
@@ -103,7 +114,7 @@ window.addEventListener('load', function() {
        
   }
 
-  function displayButtons() {
+  /*function displayButtons() {
     if (isAuthenticated()) {
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
@@ -114,7 +125,7 @@ window.addEventListener('load', function() {
       loginStatus.innerHTML =
         'You are not logged in! Please log in to continue.';
     }
-  }
+  }*/
 
-  handleAuthentication();
-});
+  authenticate();
+//});
