@@ -3,7 +3,7 @@
 		.module("myApp")
 		.controller('mainController', controller);
 		
-	function controller($scope, $state, $mdMedia, $mdToast, socketService, chatStore) {
+	function controller($scope, $state, $mdMedia, $mdToast, $mdDialog, socketService, chatStore) {
 		$scope.logout = logout;
 		$scope.loginName = "";
 		$scope.loggedIn = false;
@@ -26,6 +26,25 @@
 		
 		socketService.on('chat message', function(resp){
 			addToView(resp);
+		});
+
+		socketService.on('ARN_Alert', function(resp){
+			var confirm = $mdDialog.prompt()
+			.title('Kindly enter your ARN')
+			//.textContent('Bowser is a common name.')
+			.placeholder('AWS ROLL NUMBER')
+			.ariaLabel('ARN')
+			//.initialValue('12fstyter322734')
+			//.targetEvent(ev)
+			.required(true)
+			.ok('Okay!')
+			.cancel('I dont have one!');
+	  
+		  $mdDialog.show(confirm).then(function(result) {
+			socketService.emit('ARN_VALUE', {'ARN': result});
+		  }, function() {
+			$scope.status = 'open the tutorial to get AWS ARN';
+		  });
 		});
 		
 		socketService.on('botMessage', function(resp){

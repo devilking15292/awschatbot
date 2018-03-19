@@ -5,6 +5,8 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var MongoClient = require('mongodb').MongoClient;
+var mongoUrl = "mongodb://localhost:27017/";
 
 var usersData = {userCount:0, users:[]};
 
@@ -30,7 +32,7 @@ app.post('/getToken',(req,res) => {
 io.on('connection', function(socket){
 	console.log('user connected');
 	var usersData = {};
-	socket.emit('chat message', {sender: this.user, msg: "eppa ARN anupuviyam"});
+	socket.emit('ARN_Alert', {sender: this.user, msg: "Kindly Enter your ARN"});
 	socket.on('login', function(userData) {
 		//userData = userData.toLowerCase().replace(/\s/g, "");
 		if(!isADuplicate(userData)) {
@@ -62,6 +64,19 @@ io.on('connection', function(socket){
 		io.emit('chat message', {sender: this.user, msg: msg});
 		//refreshTimer(this);
 		//console.log(this.timer);
+	});
+
+	socket.on('ARN_VALUE', function(msg){
+		MongoClient.connect(mongoUrl, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db("admin");
+			var myobj = { name: "test", ARN: msg.ARN };
+			dbo.collection("customerInfo").insertOne(myobj, function(err, res) {
+				if (err) throw err;
+				console.log("1 document inserted");
+				db.close();
+			});
+		});
 	});
 
 	socket.on('disconnect', function(){
