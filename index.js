@@ -7,6 +7,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var MongoClient = require('mongodb').MongoClient;
 var mongoUrl = "mongodb://localhost:27017/";
+var apiai = require('apiai');
 
 var usersData = {userCount:0, users:[]};
 
@@ -61,7 +62,9 @@ io.on('connection', function(socket){
 		//	socket.emit('fakeLog');
 		//}
 		//console.log(this.user);
-		io.emit('chat message', {sender: this.user, msg: msg});
+		//io.emit('chat message', {sender: this.user, msg: msg});
+		var resp = request(msg);
+		io.emit(resp);
 		//refreshTimer(this);
 		//console.log(this.timer);
 	});
@@ -92,3 +95,22 @@ io.on('connection', function(socket){
 http.listen(8080, function(){
   console.log('listening on *:8080');
 });
+
+app.post('/getRunningEC2', (req,res) => {
+	console.log(req.body);
+	res.setHeader('Content-Type','application/json'); //Requires application/json MIME type
+  	res.send(JSON.stringify({ "speech": "No Instances", "displayText": "No Instances"}))
+});
+
+var dialogflow = apiai("ba00403d4f1648a3b30f8ecc9832c6d8");
+var request = function(){
+	dialogflow.textRequest(msg, {
+    	sessionId: '1234'
+	}).on('response', function(response) {		
+    	console.log(response);
+    	return response;
+	}).on('error', function(error){
+		console.log(error);
+		return error;
+	});
+}

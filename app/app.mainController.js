@@ -32,7 +32,7 @@
 			var confirm = $mdDialog.prompt()
 			.title('Kindly enter your ARN')
 			//.textContent('Bowser is a common name.')
-			.placeholder('AWS ROLL NUMBER')
+			.placeholder('AWS RESOURCE NAME')
 			.ariaLabel('ARN')
 			//.initialValue('12fstyter322734')
 			//.targetEvent(ev)
