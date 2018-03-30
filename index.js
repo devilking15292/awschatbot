@@ -6,7 +6,8 @@ var bodyParser = require("body-parser");
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var MongoClient = require('mongodb').MongoClient;
-var mongoUrl = "mongodb://localhost:27017/";
+//var mongoUrl = "mongodb://localhost:27017/";
+var mongoUrl = "mongodb://botuser:canny123@cannycluster-shard-00-00-ygxmv.mongodb.net:27017,cannycluster-shard-00-01-ygxmv.mongodb.net:27017,cannycluster-shard-00-02-ygxmv.mongodb.net:27017/admin?ssl=true&replicaSet=CannyCluster-shard-0&authSource=admin"
 var apiai = require('apiai');
 
 var usersData = {userCount:0, users:[]};
@@ -72,14 +73,16 @@ io.on('connection', function(socket){
 	socket.on('ARN_VALUE', function(msg){
 		MongoClient.connect(mongoUrl, function(err, db) {
 			if (err) throw err;
-			var dbo = db.db("admin");
-			var myobj = { name: "test", ARN: msg.ARN };
+			var dbo = db.db("customer");
+			var myobj = { userId: "test", ARN: msg.ARN };
 			dbo.collection("customerInfo").insertOne(myobj, function(err, res) {
 				if (err) throw err;
 				console.log("1 document inserted");
 				db.close();
 			});
 		});
+		var resp = request("Welcome Msg");
+		io.emit(resp);
 	});
 
 	socket.on('disconnect', function(){
