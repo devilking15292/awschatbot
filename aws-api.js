@@ -19,7 +19,7 @@ module.exports.sts = function(id_token){
 module.exports.refreshSTS = function(){
 	// boolean isRefresh = AWS.config.credentials.needsRefresh();
 	// console.log("refresh", isRefresh);
-}
+};
 
 module.exports.cloudWatch = function (){    
     var cw = new AWS.CloudWatch({apiVersion: '2010-08-01'});
@@ -56,13 +56,8 @@ module.exports.cloudWatch = function (){
 
 module.exports.listInstances = function(){
 	var ec2 = new AWS.EC2();
-	var params = {
-		DryRun: true,
-		Filters: [
-		{
-			Name: 'tag:vsad',
-			Values: ['B6LV']
-		},
+	var params = {		
+		Filters: [		
 		{
 			Name: 'instance-state-name',
 			Values: ['running']
@@ -75,5 +70,50 @@ module.exports.listInstances = function(){
 		console.log(data);           // successful response
 		return data;
 	  }
+	});
+};
+
+module.exports.stopInstances = function(listOfInstances) {
+	var ec2 = new AWS.EC2();
+	var params = {
+		InstanceIds=listOfInstances,		
+		Force=False
+	}
+	ec2.stopInstances(params, function(err, data){
+		if (err) console.log(err, err.stack); // an error occurred
+		else   {
+			console.log(data);           // successful response
+			return data;
+		}
+	});
+};
+
+module.exports.startInstances = function(listOfInstances) {
+	var ec2 = new AWS.EC2();
+	var params = {
+		InstanceIds=listOfInstances,		
+		Force=False
+	}
+	ec2.startInstances(params, function(err, data){
+		if (err) console.log(err, err.stack); // an error occurred
+		else   {
+			console.log(data);           // successful response
+			return data;
+		}
+	});
+};
+
+module.exports.terminateInstances = function(listOfInstances) {
+	var ec2 = new AWS.EC2();
+	var params = {
+		InstanceIds=listOfInstances,		
+		Force=False
+	}
+	ec2.terminateInstances(params, function(err, data){
+		if (err) console.log(err, err.stack); // an error occurred
+		else   {
+			console.log(data);           // successful response
+			return data;
+		}
 	});
 };
