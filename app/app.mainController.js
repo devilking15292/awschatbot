@@ -41,7 +41,7 @@
 			.cancel('I dont have one!');
 	  
 		  $mdDialog.show(confirm).then(function(result) {
-			socketService.emit('ARN_VALUE', {'ARN': result});
+			socketService.emit('ARN_VALUE', {'ARN': result,'id_token':localStorage.getItem('id_token')});
 		  }, function() {
 			$scope.status = 'open the tutorial to get AWS ARN';
 		  });

@@ -59,30 +59,30 @@ io.on('connection', function(socket){
 	})
 
 	socket.on('chat message', function(msg){
-		//if(this.user==null) {
-		//	socket.emit('fakeLog');
-		//}
-		//console.log(this.user);
-		//io.emit('chat message', {sender: this.user, msg: msg});
 		var resp = request(msg);
-		io.emit(resp);
-		//refreshTimer(this);
-		//console.log(this.timer);
+		io.emit(resp);		
 	});
 
-	socket.on('ARN_VALUE', function(msg){
-		MongoClient.connect(mongoUrl, function(err, db) {
-			if (err) throw err;
-			var dbo = db.db("customer");
-			var myobj = { userId: "test", ARN: msg.ARN };
-			dbo.collection("customerInfo").insertOne(myobj, function(err, res) {
+	socket.on('ARN_VALUE', function(msg){		
+		if(awsApi.sts(msg.id_token,msg.ARN)){
+			MongoClient.connect(mongoUrl, function(err, db) {
 				if (err) throw err;
-				console.log("1 document inserted");
-				db.close();
+				var dbo = db.db("customer");
+				var myobj = { userId: "test", ARN: msg.ARN };
+				dbo.collection("customerInfo").insertOne(myobj, function(err, res) {
+					if (err){
+						console.log(err);
+						db.close();
+						io.emit("OOPS Error Occurred. Please Try again");									
+					}
+					console.log("1 document inserted");
+					db.close();
+				});
 			});
-		});
-		var resp = request("Welcome Msg");
-		io.emit(resp);
+			var resp = request("Welcome Msg");
+			io.emit(resp);
+		}
+		
 	});
 
 	socket.on('disconnect', function(){

@@ -10,31 +10,12 @@
     redirectUri: AUTH0_CALLBACK_URL,
     audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
     responseType: 'token id_token',
-    scope: 'openid',
+    scope: 'openid profile email phone',
     leeway: 60
   });
 
- /* var loginStatus = document.querySelector('.container h4');
-  var loginView = document.getElementById('login-view');
-  var homeView = document.getElementById('home-view');
-
-  // buttons and event listeners
-  var homeViewBtn = document.getElementById('btn-home-view');
-  var loginBtn = document.getElementById('qsLoginBtn');
-  var logoutBtn = document.getElementById('qsLogoutBtn');
-
-  homeViewBtn.addEventListener('click', function() {    
-    getDelegationToken(localStorage.getItem('id_token'));
-  });
-
-  loginBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    webAuth.authorize();
-  });
-
-  logoutBtn.addEventListener('click', logout);*/
-
   function setSession(authResult) {
+    console.log(authResult);
     // Set the time that the access token will expire at
     var expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
@@ -64,7 +45,7 @@
     webAuth.parseHash(function(err, authResult) {
       if (authResult && authResult.accessToken && authResult.idToken) {
         window.location.hash = '';
-        setSession(authResult);        
+        setSession(authResult);               
         //loginBtn.style.display = 'none';
         //homeView.style.display = 'inline-block';
         redirectToBot();
@@ -77,6 +58,15 @@
       } else {
 		  webAuth.authorize();
 	  }
+    });
+  }
+
+  function getUserInfo() {    
+    webAuth.client.userInfo(localStorage.getItem('access_token'),(error,profile) => {
+      console.log("profile",profile);
+      if(!error){ 
+        this.profile = profile;               
+      }
     });
   }
   
@@ -97,6 +87,7 @@
           console.log(msg);
       }
     });*/
+  getUserInfo();
 	location.href = "http://localhost:8080/#!/chatMobile";
   }
 
