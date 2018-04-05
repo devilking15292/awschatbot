@@ -2,9 +2,9 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 
 
-module.exports.sts = function(id_token){	
+module.exports.sts = function(id_token,roleARN){	
 	AWS.config.credentials = new AWS.WebIdentityCredentials({
-	  RoleArn: 'arn:aws:iam::478401327492:role/awsbot',
+	  RoleArn: roleARN,
 	  WebIdentityToken: id_token, 
 	  RoleSessionName: 'web',
 	  DurationSeconds: 3600
@@ -76,8 +76,8 @@ module.exports.listInstances = function(){
 module.exports.stopInstances = function(listOfInstances) {
 	var ec2 = new AWS.EC2();
 	var params = {
-		InstanceIds=listOfInstances,		
-		Force=False
+		InstanceIds:listOfInstances,		
+		Force:false
 	}
 	ec2.stopInstances(params, function(err, data){
 		if (err) console.log(err, err.stack); // an error occurred
@@ -91,8 +91,8 @@ module.exports.stopInstances = function(listOfInstances) {
 module.exports.startInstances = function(listOfInstances) {
 	var ec2 = new AWS.EC2();
 	var params = {
-		InstanceIds=listOfInstances,		
-		Force=False
+		InstanceIds:listOfInstances,		
+		Force:false
 	}
 	ec2.startInstances(params, function(err, data){
 		if (err) console.log(err, err.stack); // an error occurred
@@ -106,8 +106,8 @@ module.exports.startInstances = function(listOfInstances) {
 module.exports.terminateInstances = function(listOfInstances) {
 	var ec2 = new AWS.EC2();
 	var params = {
-		InstanceIds=listOfInstances,		
-		Force=False
+		InstanceIds:listOfInstances,		
+		Force:false
 	}
 	ec2.terminateInstances(params, function(err, data){
 		if (err) console.log(err, err.stack); // an error occurred
