@@ -3,35 +3,68 @@
 		.module("myApp")
 		.controller('chatController', controller);
 		
-	function controller($scope, $state, $mdToast, socketService) {
-		if(!socketService.user) {
-			if(socketService.isMobile)
-				$state.go('loginMobile');
-			else
-				$state.go('login');
-		}
+	function controller($scope, $state, $mdToast, $mdDialog, socketService, chatStore) {
 		$scope.data = "";
 		$scope.send = send;
+		$scope.chatStore = chatStore.get();
 
-		var delivery = new Delivery(socketService);
+		socketService.socket = socketService.connect();
 
-		delivery.on('delivery.connect',function(delivery){
-			console.log('file delivery connected');
+		socketService.socket.on('chat message', function(resp){
+			addToView(resp);
 		});
 
-		delivery.on('send.success',function(fileUID){
-			console.log("file was successfully sent.");
+		socketService.socket.on('ARN_Alert', function(resp){
+			var confirm = $mdDialog.prompt()
+			.title('Kindly enter your ARN')
+			.placeholder('AWS RESOURCE NAME')
+			.ariaLabel('ARN')
+			.required(true)
+			.ok('Okay!')
+			.cancel('I dont have one!');
+	  
+		  $mdDialog.show(confirm).then(function(result) {
+			socketService.socket.emit('ARN_VALUE', {'ARN': result,'id_token':localStorage.getItem('id_token')});
+		  }, function() {
+			$scope.status = 'open the tutorial to get AWS ARN';
+		  });
+		});
+		
+		socketService.socket.on('loggedIn', function(resp){
+			$scope.user = socketService.user = resp.msg;
+			$scope.userList = resp.users;
+			$scope.loggedIn = true;
+			$scope.$apply();
+			if(socketService.isMobile)
+				$state.go('chatMobile');
+			else
+				$state.go('chat');
+		});
+		
+		socketService.socket.on('loggedOut', function() {
+			location.reload();
+		})
+		
+		socketService.socket.on('fakeLog', function() {
+			socketService.user = null;
 			$mdToast.show(
 				$mdToast
 					.simple()
-					.textContent("file sent successfully..!")
+					.textContent("sorry but you have to login")
 					.position("top left")
 					.hideDelay(3000)
 			);
-		});
+			location.reload();
+			
+		})
 		
-		$scope.showFaces = false;
-		$scope.toggleFaces = toggleFaces;
+		function addToView(resp) {
+			chatStore.set(resp);
+			$scope.chatStore = chatStore.get();
+			$scope.$digest();
+			var mesArea = document.getElementById("messages");
+			mesArea.scrollTop = mesArea.scrollHeight;
+		}
 		
 		function toggleFaces() {
 			$scope.showFaces = !$scope.showFaces;
@@ -42,21 +75,7 @@
 			if(chat != "") {
 				socketService.emit('chat message', chat);
 				document.getElementById("chat").value="";
-			} else if (document.getElementById("file").files[0]){
-				// file send
-				var file = document.getElementById("file").files[0];
-				var extraParams = {foo: 'bar'};
-				delivery.send(file, extraParams);
-				// file send end
-				$mdToast.show(
-					$mdToast
-						.simple()
-						.textContent("sending file..!")
-						.position("top left")
-						.hideDelay(3000)
-				);
 			} else {
-				//alert("what the fuck are you trying to send ? type something..!");
 				$mdToast.show(
 						$mdToast
 							.simple()

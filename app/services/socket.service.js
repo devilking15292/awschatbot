@@ -4,7 +4,7 @@
 		.factory('socketService', service);
 		
 	function service() {
-		var service = io.connect();
+		var service = io;
 		service.user = null;
 		
 		return service;
